@@ -38,7 +38,7 @@
   </description>
 
   <scm>
-    <connection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-launchpad-content.git</conncetion>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-launchpad-content.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-launchpad-content.git</developerConnection>
     <url>https://gitbox.apache.org/repos/asf?p=sling-org-apache-sling-launchpad-content.git</url>
   </scm>
