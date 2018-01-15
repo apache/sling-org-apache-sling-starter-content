@@ -17,7 +17,8 @@
 const gulp        = require('gulp');
 const sass        = require('gulp-sass');
 const header      = require('gulp-header');
-const minifyCss   = require('gulp-minify-css');
+const cleanCSS   = require('gulp-clean-css');
+var concatCss = require('gulp-concat-css');
 
 const apache2License = [
 '/*',
@@ -40,11 +41,17 @@ const apache2License = [
 ].join('\n');
 
 gulp.task('styles', function() {
-    return gulp.src('./scss/*.scss')
+    return gulp.src('./src/scss/*.scss')
         .pipe(sass().on('error', sass.logError))
-        .pipe(minifyCss())
+        .pipe(cleanCSS())
+        .pipe(concatCss('bundle.css'))
         .pipe(header(apache2License))
-        .pipe(gulp.dest('../dist/css'));
+        .pipe(gulp.dest('./dist/content/etc/clientlibs/launchpad/css'));
 });
 
-gulp.task('default', ['styles'], function() {});
+gulp.task('assets', function() {
+	gulp.src(['./src/{fonts,img}/**/*']).pipe(gulp.dest('./dist/content/etc/clientlibs/launchpad'));
+});
+
+
+gulp.task('default', ['styles', 'assets'], function() {});
