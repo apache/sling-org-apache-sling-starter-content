@@ -98,8 +98,6 @@
 				</goals>
 				<configuration>
 					<arguments>install</arguments>
-					<workingDirectory>${frontend.target}</workingDirectory>
-					<installDirectory>${frontend.target}</installDirectory>
 				</configuration>
 			</execution>
 			<execution>
@@ -107,9 +105,6 @@
 				<goals>
 					<goal>gulp</goal>
 				</goals>
-				<configuration>
-					<workingDirectory>${frontend.target}</workingDirectory>
-				</configuration>
 			</execution>
 		</executions>
       </plugin>
@@ -121,7 +116,7 @@
           <instructions>
             <Export-Package />
             <Sling-Initial-Content>content</Sling-Initial-Content>
-            <Include-Resource>{maven-resources},${basedir}/src/main/resources,${basedir}/target/frontend/dist,</Include-Resource>
+            <Include-Resource>{maven-resources},${basedir}/target/frontend/dist</Include-Resource>
           </instructions>
         </configuration>
       </plugin>
