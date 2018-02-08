@@ -1,5 +1,15 @@
 {
     "jcr:mixinTypes": [ "sling:Redirect" ],
     "sling:resourceType": "sling:redirect",
-    "sling:target": "/index.html"
+    "sling:target": "/index.html",
+    "etc": {
+        "sling:resourceType": "sling:Folder",
+        "map": {
+            "sling:resourceType": "sling:Folder",
+            "localhost": {
+                "sling:match": "localhost",
+                "sling:internalRedirect": "/content"
+            }
+        }
+    }
 }
