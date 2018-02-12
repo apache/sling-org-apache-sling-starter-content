@@ -1,14 +1,18 @@
 {
     "jcr:mixinTypes": [ "sling:Redirect" ],
     "sling:resourceType": "sling:redirect",
-    "sling:target": "/index.html",
+    "sling:target": "/starter/index.html",
     "etc": {
-        "sling:resourceType": "sling:Folder",
+        "jcr:primaryType": "sling:Folder",
         "map": {
-            "sling:resourceType": "sling:Folder",
-            "localhost": {
-                "sling:match": "localhost",
-                "sling:internalRedirect": "/content"
+            "jcr:primaryType": "sling:Folder",
+            "http": {
+                "jcr:primaryType": "sling:Folder",
+                "localhost": {
+                    "jcr:primaryType": "sling:Mapping",
+                    "sling:match": "localhost\\.\\d*/$",
+                    "sling:redirect": "/starter/index.html"
+                }
             }
         }
     }
