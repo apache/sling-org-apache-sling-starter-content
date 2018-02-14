@@ -1,7 +1,7 @@
 {
-  "name": "apache-sling-launchpad-front-end",
+  "name": "apache-sling-starter-front-end",
   "version": "1.0.0",
-  "description": "Scripts to power the front-end of Apache Sling's launchpad.",
+  "description": "Scripts to power the front-end of Apache Sling's Starter.",
   "repository": {
     "type": "git",
     "url": "https://github.com/npm/npm.git"
