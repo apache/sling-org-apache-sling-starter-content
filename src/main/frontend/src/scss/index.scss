@@ -24,16 +24,15 @@
 body {
     margin: 0;
     font-family: 'Open Sans', Helvetica, Arial;
-    font-weight: 300;
-    color: rgb(0,0,0);
+    font-weight: 400;
+    color: rgb(80,80,80);
     position: relative;
     height: 100%;
 }
 
 h1 {
-    font-weight: 300;
     font-size: 2.4em;
-    color: rgb(96,96,96);
+    font-weight: 300;
 }
 
 h2 {
@@ -48,7 +47,7 @@ p {
 }
 
 a {
-    color: rgb(0,103,140);
+    color: rgb(0,96,128);
     text-decoration: none;
 
     &:hover {
@@ -117,7 +116,11 @@ a {
         margin-bottom: 1em;
     }
 
-    #Logout {
+    #login-signedout {
+        display: none;
+    }
+
+    #login-signedin {
         display: none;
     }
 }
