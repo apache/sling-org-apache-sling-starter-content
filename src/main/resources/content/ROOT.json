@@ -1,8 +1,8 @@
 {
     "sling:resourceType": "sling:redirect",
-    "sling:target": "/starter/index.html",
+    "sling:target": "/starter.html",
     "content" : {
         "sling:resourceType": "sling:redirect",
-        "sling:target": "/starter/index.html"
+        "sling:target": "/starter.html"
     }
 }
