@@ -8,3 +8,8 @@ The Starter Content bundle provides some initial and sample content as well as l
 
 
 This module is part of the [Apache Sling](https://sling.apache.org) project.
+
+
+## Extensibility
+
+Additional content can be provided by placing resources under `/content/starter/sidebar-extensions`. These will be rendered in the right sidebar.

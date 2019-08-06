@@ -1,7 +1,0 @@
-{
-    "sling:resourceType": "sling/starter/home",
-    "jcr:resourceType": "sling:Folder",
-    "hostname": {
-    	"sling:resourceType": "sling/starter/hostname"
-    }
-}
