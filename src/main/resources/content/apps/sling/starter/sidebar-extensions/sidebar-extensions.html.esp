@@ -16,6 +16,9 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<sly data-sly-list.extension="${resource.children}">
-	<sly data-sly-resource="${extension.path}"/>
-</sly>
+<%
+it = resource.getResourceResolver().listChildren(resource);
+while(it.hasNext()) {
+  sling.include(it.next());
+}
+%>

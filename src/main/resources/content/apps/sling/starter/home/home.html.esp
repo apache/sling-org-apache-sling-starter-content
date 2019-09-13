@@ -77,7 +77,7 @@
                             <li><a href="https://github.com/apache/sling-aggregator" target="_blank" rel="noopener" title="View the Sling Aggregator on Github">All Sling repos</a></li>
                             <li><a href="https://github.com/apache/sling-samples" target="_blank" rel="noopener" title="View Apache Sling sample applications on Github">Sample Applications</a></li>
                         </ul>
-                        <sly data-sly-resource="sidebar-extensions"/>
+                        <% sling.include("/content/starter/sidebar-extensions"); %>
                     </section>
                 </div>
             </div>
