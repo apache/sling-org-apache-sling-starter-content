@@ -22,13 +22,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.sling</groupId>
-    <artifactId>sling</artifactId>
-    <version>26</version>
+    <artifactId>sling-bundle-parent</artifactId>
+    <version>35</version>
     <relativePath />
   </parent>
 
   <artifactId>org.apache.sling.starter.content</artifactId>
-  <packaging>bundle</packaging>
   <version>1.0.7-SNAPSHOT</version>
 
   <name>Apache Sling Starter Content</name>
@@ -51,7 +50,10 @@
   <build>
   
     <plugins>
-    
+      <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-maven-plugin</artifactId>
+      </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
@@ -108,18 +110,6 @@
 				</goals>
 			</execution>
 		</executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Export-Package />
-            <Sling-Initial-Content>content</Sling-Initial-Content>
-            <Include-Resource>{maven-resources},${basedir}/target/frontend/dist</Include-Resource>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
   </build>
