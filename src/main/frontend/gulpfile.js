@@ -46,11 +46,11 @@ gulp.task('styles', function() {
         .pipe(cleanCSS())
         .pipe(concatCss('bundle.css'))
         .pipe(header(apache2License))
-        .pipe(gulp.dest('./dist/content/content/starter/css'));
+        .pipe(gulp.dest('./dist/jcr/content/starter/css'));
 });
 
 gulp.task('assets', function() {
-	gulp.src(['./src/{fonts,img}/**/*']).pipe(gulp.dest('./dist/content/content/starter'));
+	gulp.src(['./src/{fonts,img}/**/*']).pipe(gulp.dest('./dist/jcr/content/starter'));
 });
 
 

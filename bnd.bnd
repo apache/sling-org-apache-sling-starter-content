@@ -1,3 +1,3 @@
-Sling-Initial-Content: content
+Sling-Initial-Content: jcr
 
 -includeresource: target/frontend/dist
