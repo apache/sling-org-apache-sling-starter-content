@@ -66,6 +66,7 @@
                         <h2>This Site</h2>
                         <ul>
                             <li><a href="../bin/browser.html" title="Browse the JCR content of this site">Browse Content</a></li>
+                            <li><a href="../htl/repl.html" title="Edit HTL scripts using a Read-Eval-Print Loop">HTL scripts REPL</a></li>
                             <li><a href="../system/console/bundles" title="Edit the OSGi bundles of this site">System Console</a></li>
                             <li><a href="../system/console/configMgr" title="Edit the OSGi configurations of this site">System Configuration</a></li>
                         </ul>
