@@ -72,7 +72,7 @@
                         </ul>
                         <h2>Reference</h2>
                         <ul>
-                            <li><a href="http://sling.apache.org/apidocs/sling11/index.html" target="_blank" rel="noopener" title="Vist the Apache Sling Javadocs">API Documentation</a></li>
+                            <li><a href="http://sling.apache.org/apidocs/sling12/index.html" target="_blank" rel="noopener" title="Visit the Apache Sling Javadocs">API Documentation</a></li>
                             <li><a href="http://sling.apache.org/project-information.html#mailing-lists" rel="noopener" target="_blank" title="View available Apache Sling mailing lists">Mailing Lists</a></li>
                             <li><a href="http://sling.apache.org/documentation/tutorials-how-tos.html" rel="noopener" target="_blank" title="View Apache Sling Developer Tutorials">Tutorials</a></li>
                             <li><a href="https://github.com/apache/sling-aggregator" target="_blank" rel="noopener" title="View the Sling Aggregator on Github">All Sling repos</a></li>
