@@ -29,8 +29,6 @@ public class RestrictionItem {
     private RestrictionDefinition rd;
     private Object value;
     private boolean exists;
-    private long depth;
-    private String extraCssClasses;
 
     public RestrictionItem(RestrictionDefinition rd, Object value, boolean exists) {
         super();
@@ -105,32 +103,6 @@ public class RestrictionItem {
         return rd.isMandatory();
     }
 
-    public void addExtraCssClass(String addClass) {
-        if (this.extraCssClasses == null) {
-            this.extraCssClasses  = addClass;
-        } else {
-            this.extraCssClasses = String.format("%s %s", this.extraCssClasses, addClass);
-        }
-    }
-
-    public String getDepthCss() {
-        String css;
-        if (extraCssClasses != null) {
-            css = String.format("depth%d %s", this.depth, extraCssClasses);
-        } else {
-            css = String.format("depth%d", this.depth);
-        }
-        return css;
-    }
-
-    public long getDepth() {
-        return depth;
-    }
-
-    public void setDepth(long depth) {
-        this.depth = depth;
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -144,10 +116,6 @@ public class RestrictionItem {
         }
         builder.append(", exists=");
         builder.append(exists);
-        builder.append(", depth=");
-        builder.append(depth);
-        builder.append(", extraCssClasses=");
-        builder.append(extraCssClasses);
         builder.append("]");
         return builder.toString();
     }

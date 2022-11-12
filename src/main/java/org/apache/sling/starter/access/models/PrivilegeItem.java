@@ -48,9 +48,7 @@ public class PrivilegeItem {
         this.longestPath = longestPath;
         this.depth = longestPath.chars().filter(ch -> ch == '/').count();
         this.allowRestrictions = allowRestrictions;
-        this.allowRestrictions.forEach(r -> r.setDepth(depth + 1));
         this.denyRestrictions = denyRestrictions;
-        this.denyRestrictions.forEach(r -> r.setDepth(depth + 1));
     }
 
     public String getName() {
