@@ -1,3 +1,6 @@
 Sling-Initial-Content: initial-content
 
 -includeresource: target/frontend/dist
+
+# scan for any sling models
+-plugin.sling.models: org.apache.sling.bnd.models.ModelsScannerPlugin

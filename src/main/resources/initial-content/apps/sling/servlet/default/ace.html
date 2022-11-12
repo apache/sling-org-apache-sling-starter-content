@@ -1,0 +1,172 @@
+<sly data-sly-use.p="org.apache.sling.starter.access.models.Ace" data-sly-set.canModify="${p.canModifyAccessControl}">
+</sly><!DOCTYPE html>
+<html lang="en">
+<!--/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/-->
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Access Control Entry : ${resource.name}</title>
+  <meta name="theme-color" content="#00678c">
+  <link href="${request.contextPath}/starter/css/bundle.css" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="${request.contextPath}/starter/access/ace.css" />
+</head>
+<body>
+  <div class="Grid Fit-Medium Home-Grid">
+      <div class="Gradient"></div>
+      <header class="Cell Medium-35 Large-25 Align-Center Logos">
+          <a href="http://sling.apache.org" target="_blank" rel="noopener" id="sling-logo" title="Visit the Apache Sling website">
+              <img src="${request.contextPath}/starter/img/sling-logo.svg" alt="Apache Sling Logo"/>
+          </a>
+          <a href="http://apache.org" target="_blank" rel="noopener" id="asf-logo" title="Visit the Apache Software Foundation website">
+              <img src="${request.contextPath}/starter/img/asf-logo.svg" alt="Apache Software Foundation Logo"/>
+          </a>
+      </header>
+      <div class="Cell Align-Center Main-Content">
+          <div class="Grid">
+              <section class="Cell Large-70">
+                  <p data-sly-test.isInvalid="${p.isInvalidPrincipal}" class="notice error">Invalid principal name: ${p.principalId}</p>
+
+                  <h1 data-sly-test="${!isInvalid}">${canModify ? "Modify" : "View"} ACE on ${p.location} for: ${p.principalId}</h1>
+
+                  <form data-sly-test="${!isInvalid}" id="modifyAceForm" method="POST" action="${request.contextPath}${p.location}.modifyAce.html" autocomplete="off" >
+                     <input type="hidden" name=":redirect" value="${request.contextPath}${p.location}.acl.html" />
+                     <input id="principalId" type="hidden" name="principalId" value="${p.principalId}" />
+
+                     <fieldset id="ace-privileges">
+                       <legend><label>Declared Privileges</label></legend>
+
+                       <table id="privileges">
+                         <caption>Declared Privileges</caption>
+                         <thead>
+                           <tr>
+                              <th scope="col" style="text-align:left;">Name</th>
+                              <th scope="col" style="text-align:left;width:25%">Allow</th>
+                              <th scope="col" style="text-align:left;width:25%">Deny</th>
+                           </tr>
+                         </thead>
+                         <tbody>
+                           <tr data-sly-repeat.pi="${p.privileges}" data-privilege="${pi.name}">
+                             <td class="${pi.depthCss @ context='attribute'}" style="text-align:left">
+                                <div class="ellipsis">
+                                  <label>${pi.name}</label>
+                                </div>
+                             </td>
+                             <td style="text-align:left" data-sly-set.checked="${pi.granted}" data-sly-set.restrictions="${pi.allowRestrictions}" >
+                                <div class="ellipsis">
+                                   <label><input type="checkbox" class="granted_or_denied" name="privilege@${pi.name}" value="allow" data-sly-attribute.checked="${checked}" data-sly-attribute.disabled="${!canModify}"/></label>
+                                   <input data-sly-test="${canModify && pi.allowExists}" type="hidden" class="delete" name="privilege@${pi.name}@Delete" value="allow" data-sly-attribute.disabled="${checked}" />
+                                   <span class="editRestrictions" style="${checked ? null : 'display:none' @ context='attribute'}">
+                                      <a href="javascript:void(0)" id="edit-allow-restriction@${pi.name}" title="Edit Restrictions">
+                                         <span class="restriction-details">
+                                            <sly data-sly-test="${!restrictions}">No Restrictions</sly>
+                                            <sly data-sly-repeat.restriction="${restrictions}"><sly data-sly-test="${!restrictionList.first}">, </sly>${restriction.name}</sly>
+                                         </span>
+                                      </a>
+                                      <span class="restriction-state">
+                                         <sly data-sly-repeat.restriction="${restrictions}" >
+                                             <input data-sly-repeat.value="${restriction.values}" type="hidden" name="restriction@${pi.name}@${restriction.name}@Allow" value="${value}" data-sly-attribute.disabled="${!canModify}" />
+                                         </sly>
+                                         <input data-sly-test="${canModify}" data-sly-repeat.restriction="${pi.allowRestrictionsToDelete}" type="hidden" name="restriction@${pi.name}@${restriction}@Delete" value="allow" />
+                                      </span>
+                                   </span>
+                                </div>
+                             </td>
+                             <td style="text-align:left" data-sly-set.checked="${pi.denied}" data-sly-set.restrictions="${pi.denyRestrictions}" >
+                                <div class="ellipsis">
+                                   <label><input type="checkbox" class="granted_or_denied" name="privilege@${pi.name}" value="deny" data-sly-attribute.checked="${checked}" data-sly-attribute.disabled="${!canModify}"/></label>
+                                   <input data-sly-test="${canModify && pi.denyExists}" type="hidden" class="delete" name="privilege@${pi.name}@Delete" value="deny" data-sly-attribute.disabled="${checked}" />
+                                   <span class="editRestrictions" style="${checked ? null : 'display:none' @ context='attribute'}">
+                                      <a href="javascript:void(0)" id="edit-deny-restriction@${pi.name}" title="Edit Restrictions">
+                                         <span class="restriction-details">
+                                            <sly data-sly-test="${!restrictions}">No Restrictions</sly>
+                                            <sly data-sly-repeat.restriction="${restrictions}"><sly data-sly-test="${!restrictionList.first}">, </sly>${restriction.name}</sly>
+                                         </span>
+                                      </a>
+                                      <span class="restriction-state">
+                                         <sly data-sly-repeat.restriction="${restrictions}" >
+                                             <input data-sly-repeat.value="${restriction.values}" type="hidden" name="restriction@${pi.name}@${restriction.name}@Deny" value="${value}" data-sly-attribute.disabled="${!canModify}" />
+                                         </sly>
+                                         <input data-sly-test="${canModify}" data-sly-repeat.restriction="${pi.denyRestrictionsToDelete}" type="hidden" name="restriction@${pi.name}@${restriction}@Delete" value="deny" />
+                                      </span>
+                                   </span>
+                                </div>
+                             </td>
+                           </tr>
+                         </tbody>
+                       </table>
+                     </fieldset>
+
+                     <div data-sly-test="${canModify}">
+                        <label for="order">Order</label>
+                        <select id="order" name="order">
+                            <option data-sly-attribute.selected="${p.orderValue == ''}" value="">Default</option>
+                            <option data-sly-attribute.selected="${p.orderValue == 'first'}" value="first">First</option>
+                            <option data-sly-repeat.principal="${p.orderList}" value="before ${principal.name}">Before ${principal.name}</option>
+                            <option data-sly-attribute.selected="${p.orderValue == 'last'}" value="last">Last</option>
+                        </select>
+                     </div>
+
+                     <div class="form-buttons" data-sly-test="${canModify}">
+                        <button id="applyButton" type="submit" class="button-primary">Apply</button>
+                        <button data-sly-test="${p.exists}" id="deleteButton" type="button">Delete</button>
+                     </div>
+                  </form>
+
+                  <form data-sly-test="${!isInvalid && p.exists}" id="deleteAceForm" method="POST" action="${request.contextPath}${p.location}.deleteAce.html" autocomplete="off" >
+                     <input type="hidden" name=":redirect" value="${request.contextPath}${p.location}.acl.html" />
+                     <input type="hidden" name=":applyTo" value="${p.principalId}" />
+                  </form>
+
+                  <dialog data-sly-test="${!isInvalid}" id="restrictionsDialog">
+                     <form id="modifyAceRestrictionsForm" method="dialog"
+                             data-for-privilege-allow="" data-canModify="${canModify ? 'true' : 'false'}" autocomplete="off" >
+                        <h3>
+                           Restrictions For Privilege: <label><span id="for-privilege"></span></label>
+                        </h3>
+
+                        <p data-sly-repeat.ri="${p.supportedRestrictionsInfo}" data-restriction="${ri.name}" data-multival="${ri.requiredType.array ? 'true' : 'false'}" class="restriction-row">
+                          <label><input class="declare-restriction" type="checkbox" data-sly-attribute.checked="${ri.manditory}" 
+                                      data-sly-attribute.readonly="${ri.manditory}" data-sly-attribute.disabled="${!canModify}" /> ${ri.name} </label>
+                        </p>
+
+                        <div class="form-buttons" style="margin-top: 20px; text-align: right;">
+                           <button id="dlgOk" data-sly-attribute.disabled="${!canModify}">Ok</button>
+                           <button id="dlgCancel">Cancel</button>
+                        </div>
+                     </form>
+                  </dialog>
+              </section>
+              <div class="Cell Large-5"><!--/* Give the columns a bit of space between them. */--></div>
+              <section class="Cell Large-25">
+                 <h1>Session</h1>
+                 <h2 id="login-signedin" style="display: block;"><a href="${request.contextPath}/system/sling/logout" title="Logout of Apache Sling">Logout</a> <span id="user">${request.remoteUser}</span></h2>
+              </section>
+          </div>
+      </div>
+  </div>
+  <script data-sly-test="${!isInvalid}" type="text/javascript">
+     // holds the details for all supported aggregate privileges
+     const aggregates = ${p.privilegeAggregationsAsJSON @ context='unsafe'};
+
+     //  holds the names of the already existing restrictions
+     const existingRestrictionNames = ${p.existingRestrictionNamesAsJSON @ context='unsafe'};
+  </script>
+  <script data-sly-test="${!isInvalid}" type="text/javascript" src="${request.contextPath}/starter/access/ace.js"></script>
+</body>
+</html>
