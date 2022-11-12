@@ -603,7 +603,7 @@ public class Ace extends AccessFormPage {
         String pid = getPrincipalId();
         JsonObject acl = getAcl.getAcl(jcrSession, getAcePath());
         for (String uid : acl.keySet()) {
-            if (pid.equals(uid)) {
+            if (pid != null && pid.equals(uid)) {
                 //skip it
                 continue;
             }

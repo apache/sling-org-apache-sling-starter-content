@@ -47,6 +47,7 @@
   	<frontend.target>target/frontend</frontend.target>
     <project.build.outputTimestamp>1646405911</project.build.outputTimestamp>
     <oak.version>1.16.0</oak.version>
+    <junit-jupiter.version>5.9.1</junit-jupiter.version>
   </properties>
 
   <build>
@@ -206,5 +207,30 @@
             <artifactId>org.apache.sling.jcr.jackrabbit.accessmanager</artifactId>
             <version>3.0.11-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.johnzon</groupId>
+            <artifactId>johnzon-core</artifactId>
+            <version>1.2.19</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 </project>
