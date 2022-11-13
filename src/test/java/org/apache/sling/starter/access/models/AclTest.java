@@ -112,23 +112,18 @@ class AclTest extends AccessFormPageTest {
         principals.stream().forEach(item -> asMap.put(item.getName(), item));
 
         PrincipalPrivilege candidateUser = asMap.get("testUser1");
-        assetNotNull(candidateUser);
+        assertNotNull(candidateUser);
         assertEquals("testUser1", candidateUser.getName());
         assertTrue(candidateUser.isAllow());
         assertFalse(candidateUser.isDeny());
         assertFalse(candidateUser.getIsGroup());
 
         PrincipalPrivilege candidateGroup = asMap.get("testGroup1");
-        assetNotNull(candidateGroup);
+        assertNotNull(candidateGroup);
         assertEquals("testGroup1", candidateGroup.getName());
         assertTrue(candidateGroup.isAllow());
         assertTrue(candidateGroup.isDeny());
         assertTrue(candidateGroup.getIsGroup());
-    }
-
-    private void assetNotNull(PrincipalPrivilege candidateUser) {
-        // TODO Auto-generated method stub
-        
     }
 
 }

@@ -25,10 +25,13 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 
 import org.apache.jackrabbit.oak.api.Type;
 import org.apache.jackrabbit.oak.spi.security.authorization.accesscontrol.AccessControlConstants;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionDefinition;
+import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -39,31 +42,28 @@ class RestrictionItemTest {
 
     private RestrictionItem itemNamesRi;
 
-    protected RestrictionItem createSingleValueRestrictionItem() {
+    protected RestrictionItem createRestrictionItem(String name, Type<?> type, Object value) {
+        return createRestrictionItem(name, type, value, false);
+    }
+    protected RestrictionItem createRestrictionItem(String name, Type<?> type, Object value, boolean isManditory) {
         RestrictionDefinition globRd = Mockito.mock(RestrictionDefinition.class);
-        Mockito.when(globRd.getName()).thenReturn(AccessControlConstants.REP_GLOB);
-        Mockito.when(globRd.getRequiredType()).thenAnswer(new Answer<Type<?>>() {
+        Mockito.when(globRd.getName()).thenReturn(name);
+        Mockito.when(globRd.getRequiredType())
+        .thenAnswer(new Answer<Type<?>>() {
             @Override
             public Type<?> answer(InvocationOnMock invocation) throws Throwable {
-                return Type.STRING;
+                return type;
             }
         });
-        RestrictionItem globRi = new RestrictionItem(globRd, "glob1", false);
-        return globRi;
+        if (isManditory) {
+            Mockito.when(globRd.isMandatory()).thenReturn(isManditory);
+        }
+        return new RestrictionItem(globRd, value, false);
     }
 
     @BeforeEach
     void beforeEach() {
-        RestrictionDefinition rd = Mockito.mock(RestrictionDefinition.class);
-        Mockito.when(rd.getName()).thenReturn(AccessControlConstants.REP_ITEM_NAMES);
-        Mockito.when(rd.getRequiredType()).thenAnswer(new Answer<Type<?>>() {
-            @Override
-            public Type<?> answer(InvocationOnMock invocation) throws Throwable {
-                return Type.STRINGS;
-            }
-        });
-
-        itemNamesRi = new RestrictionItem(rd, new String[] {"name1", "name2"}, false);
+        itemNamesRi = createRestrictionItem(AccessControlConstants.REP_ITEM_NAMES, Type.STRINGS, new String[] {"name1", "name2"});
     }
 
     /**
@@ -82,7 +82,7 @@ class RestrictionItemTest {
         assertTrue(itemNamesRi.isMultiValue());
 
         // also a non-multivalue one
-        RestrictionItem globRi = createSingleValueRestrictionItem();
+        RestrictionItem globRi = createRestrictionItem(AccessControlConstants.REP_GLOB, Type.STRING, "glob1");
         assertFalse(globRi.isMultiValue());
     }
 
@@ -94,8 +94,18 @@ class RestrictionItemTest {
         assertEquals("name1", itemNamesRi.getValue());
 
         // also a non-multivalue one
-        RestrictionItem globRi = createSingleValueRestrictionItem();
+        RestrictionItem globRi = createRestrictionItem(AccessControlConstants.REP_GLOB, Type.STRING, "glob1");
         assertEquals("glob1", globRi.getValue());
+
+        // also a Value instead of String
+        ValueFactory vf = ValueFactoryImpl.getInstance();
+        globRi = createRestrictionItem(AccessControlConstants.REP_GLOB, Type.STRING, vf.createValue("glob1"));
+        assertEquals("glob1", globRi.getValue());
+
+        // also a Value[] instead of String[]
+        itemNamesRi = createRestrictionItem(AccessControlConstants.REP_ITEM_NAMES, Type.STRINGS,
+                new Value[] {vf.createValue("name1"), vf.createValue("name2")});
+        assertEquals("name1", itemNamesRi.getValue());
     }
 
     /**
@@ -106,8 +116,18 @@ class RestrictionItemTest {
         assertEquals(Arrays.asList("name1", "name2"), itemNamesRi.getValues());
 
         // also a non-multivalue one
-        RestrictionItem globRi = createSingleValueRestrictionItem();
+        RestrictionItem globRi = createRestrictionItem(AccessControlConstants.REP_GLOB, Type.STRING, "glob1");
         assertEquals(Collections.singletonList("glob1"), globRi.getValues());
+
+        // also a Value instead of String
+        ValueFactory vf = ValueFactoryImpl.getInstance();
+        globRi = createRestrictionItem(AccessControlConstants.REP_GLOB, Type.STRING, vf.createValue("glob1"));
+        assertEquals(Collections.singletonList("glob1"), globRi.getValues());
+
+        // also a Value[] instead of String[]
+        itemNamesRi = createRestrictionItem(AccessControlConstants.REP_ITEM_NAMES, Type.STRINGS,
+                new Value[] {vf.createValue("name1"), vf.createValue("name2")});
+        assertEquals(Arrays.asList("name1", "name2"), itemNamesRi.getValues());
     }
 
     /**
@@ -139,10 +159,8 @@ class RestrictionItemTest {
         assertFalse(itemNamesRi.isMandatory());
 
         // also a mandatory one
-        RestrictionDefinition mandatoryRd = Mockito.mock(RestrictionDefinition.class);
-        Mockito.when(mandatoryRd.getName()).thenReturn("test:mandatory1");
-        Mockito.when(mandatoryRd.isMandatory()).thenReturn(true);
-        assertTrue(mandatoryRd.isMandatory());
+        RestrictionItem globRi = createRestrictionItem(AccessControlConstants.REP_GLOB, Type.STRING, "glob1", true);
+        assertTrue(globRi.isMandatory());
     }
 
     /**
