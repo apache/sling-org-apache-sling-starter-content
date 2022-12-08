@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
@@ -66,7 +65,7 @@ import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.jcr.jackrabbit.accessmanager.GetAce;
 import org.apache.sling.jcr.jackrabbit.accessmanager.GetAcl;
 import org.apache.sling.models.annotations.Model;
-import org.apache.sling.models.annotations.Source;
+import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.servlets.post.SlingPostConstants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -102,13 +101,13 @@ public class Ace extends AccessFormPage {
     protected Map<Privilege, PrivilegeItem> persistedPrivilegesMap = null;
     private boolean aceExists;
 
-    @Inject @Source("osgi-services")
+    @OSGiService
     protected List<RestrictionProvider> restrictionProviders = null;
 
-    @Inject @Source("osgi-services") 
+    @OSGiService
     public GetAce getAce = null;
 
-    @Inject @Source("osgi-services") 
+    @OSGiService
     public GetAcl getAcl = null;
 
     /**

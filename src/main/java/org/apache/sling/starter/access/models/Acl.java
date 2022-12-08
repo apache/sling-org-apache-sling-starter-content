@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.inject.Inject;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.json.JsonObject;
@@ -34,13 +33,13 @@ import org.apache.jackrabbit.api.security.principal.PrincipalManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.jcr.jackrabbit.accessmanager.GetAcl;
 import org.apache.sling.models.annotations.Model;
-import org.apache.sling.models.annotations.Source;
+import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 
 @Model(adaptables=SlingHttpServletRequest.class)
 public class Acl extends AccessFormPage {
     private List<PrincipalPrivilege> principalPrivilegeList;
 
-    @Inject @Source("osgi-services") 
+    @OSGiService
     public GetAcl getAcl = null;
 
     public Collection<PrincipalPrivilege> getPrincipals() throws RepositoryException {
