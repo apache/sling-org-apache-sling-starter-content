@@ -1,0 +1,107 @@
+<sly data-sly-use.p="org.apache.sling.starter.access.models.Acl" data-sly-set.canModify="${p.canModifyAccessControl}">
+</sly><!DOCTYPE html>
+<html lang="en">
+<!--/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/-->
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Access Control List : ${resource.name}</title>
+  <meta name="theme-color" content="#00678c">
+  <link href="${request.contextPath}/starter/css/bundle.css" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="${request.contextPath}/starter/access/acl.css" />
+</head>
+<body>
+  <div class="Grid Fit-Medium Home-Grid">
+      <div class="Gradient"></div>
+      <header class="Cell Medium-35 Large-25 Align-Center Logos">
+          <a href="http://sling.apache.org" target="_blank" rel="noopener" id="sling-logo" title="Visit the Apache Sling website">
+              <img src="${request.contextPath}/starter/img/sling-logo.svg" alt="Apache Sling Logo"/>
+          </a>
+          <a href="http://apache.org" target="_blank" rel="noopener" id="asf-logo" title="Visit the Apache Software Foundation website">
+              <img src="${request.contextPath}/starter/img/asf-logo.svg" alt="Apache Software Foundation Logo"/>
+          </a>
+      </header>
+      <div class="Cell Align-Center Main-Content">
+          <div class="Grid">
+              <section class="Cell Large-70">
+                <h1>${canModify ? "Modify" : "View"} ACL on: ${p.location}</h1>
+
+                <fieldset data-sly-test="${canModify}">
+                  <legend>Add an entry for a user or group</legend>
+                  <form id="addAceForm" data-sly-test.canModify="${canModify}" method="GET" action="${request.contextPath}${p.location}.ace.html">
+                    <input id="addPid" type="text" name="pid" value="" placeholder='User or group name' required="required" />
+                    <button id="addAce" type="submit" class="button-primary">Add Entry</button>
+                  </form>
+                </fieldset>
+                <fieldset data-sly-set.list="${p.principals}">
+                  <legend>Current access control entries</legend>
+
+                  <p data-sly-test="${list.empty}" class="notice info"><span>No access control entries have been declared.</span></p>
+                  <form method="POST" action="${request.contextPath}${p.location}.deleteAce.html" 
+                        data-sly-test="${!list.empty}" >
+                    <input type="hidden" name=":redirect" value="${request.contextPath}${p.location}.acl.html" />
+                    <table id="aces">
+                      <caption>Access Control Entries</caption>
+                      <thead>
+                        <tr>
+                          <th scope="col" style="text-align: left;">Principal</th>
+                          <th scope="col" style="text-align: center;">Privileges</th>
+                          <th data-sly-test="${canModify}" scope="col" style="text-align: center;"><sly data-sly-test="${canModify}">Remove</sly></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr data-sly-repeat.pi="${list}">
+                          <td style="text-align: left;">
+                            <div class="ellipsis">
+                              <a href="${request.contextPath}${p.location}.ace.html?pid=${pi.name}">
+                                ${pi.name}
+                              </a>
+                            </div>
+                          </td>
+                          <td style="text-align: center;">
+                            <div class="ellipsis">
+                              ${pi.privilegesDisplayName}
+                            </div>
+                          </td>
+                          <td data-sly-test="${canModify}" style="text-align: center;">
+                               <input class="delete" type="checkbox" name=":applyTo" value="${pi.name}" />
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tfoot data-sly-test="${canModify}">
+                         <tr>
+                            <td colspan="2"></td>
+                            <td style="text-align: center;"><button id="removeButton" type="submit" disabled="disabled">Remove Selected</button></td>
+                         </tr>
+                      </tfoot>
+                    </table>
+                  </form>
+                </fieldset>
+              </section>
+              <div class="Cell Large-5"><!--/* Give the columns a bit of space between them. */--></div>
+              <section class="Cell Large-25">
+                 <h1>Session</h1>
+                 <h2 id="login-signedin" style="display: block;"><a href="${request.contextPath}/system/sling/logout" title="Logout of Apache Sling">Logout</a> <span id="user">${request.remoteUser}</span></h2>
+              </section>
+          </div>
+      </div>
+  </div>
+  <script data-sly-test="${canModify}" type="text/javascript" src="${request.contextPath}/starter/access/acl.js"></script>
+</body>
+</html>

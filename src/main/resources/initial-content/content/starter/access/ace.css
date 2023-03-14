@@ -1,0 +1,161 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.notice.error {
+    color: #c00;
+    background-color: #fee;
+    border: 1px solid #c00;
+    margin: 3px;
+    padding: 4px;
+    line-height: 18px;
+    font-weight: bold;
+}
+
+table#privileges {
+    width: 100%;
+}
+table#restrictions caption,
+table#privileges caption {
+    display: none;
+}
+
+table#privileges .ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+table#privileges tbody tr:nth-child(odd) {
+    background-color: aliceblue;
+}
+
+table#privileges td.depth1 label:before {
+    content: "\0000a0┣━ ";
+    font-family: monospace;
+    color: gray;
+}
+table#privileges td.depth1.lastBranch label:before,
+table#privileges td.depth1.lastSibling label:before {
+    content: "\0000a0┗━ ";
+}
+
+table#privileges td.depth2 label:before {
+    content: "\0000a0┃\0000a0\0000a0\0000a0┣━ ";
+    font-family: monospace;
+    color: gray;
+}
+table#privileges td.depth2.lastSibling label:before {
+    content: "\0000a0┃\0000a0\0000a0\0000a0┗━ ";
+}
+table#privileges td.depth2.lastBranch label:before {
+    content: "\0000a0\0000a0\0000a0\0000a0\0000a0┣━ ";
+}
+table#privileges td.depth2.lastSibling.lastBranch label:before {
+    content: "\0000a0\0000a0\0000a0\0000a0\0000a0┗━ ";
+}
+
+table#privileges td.depth3 label:before {
+    content: "\0000a0┃\0000a0\0000a0\0000a0┃\0000a0\0000a0\0000a0┣━ ";
+    font-family: monospace;
+    color: gray;
+}
+table#privileges td.depth3.lastSibling label:before {
+    content: "\0000a0┃\0000a0\0000a0\0000a0┃\0000a0\0000a0\0000a0┗━ ";
+}
+table#privileges td.depth3.lastBranch label:before {
+    content: "\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0┣━ ";
+}
+table#privileges td.depth3.lastSibling.lastBranch label:before {
+    content: "\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0┗━ ";
+}
+
+table#privileges td.depth4 label:before {
+    content: "\0000a0┃\0000a0\0000a0\0000a0┃\0000a0\0000a0\0000a0┃\0000a0\0000a0\0000a0┣━ ";
+    font-family: monospace;
+    color: gray;
+}
+table#privileges td.depth4.lastSibling label:before {
+    content: "\0000a0┃\0000a0\0000a0\0000a0┃\0000a0\0000a0\0000a0┃\0000a0\0000a0\0000a0┗━ ";
+}
+table#privileges td.depth4.lastBranch label:before {
+    content: "\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0┃\0000a0\0000a0\0000a0┣━ ";
+}
+table#privileges td.depth4.lastSibling.lastBranch label:before {
+    content: "\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0┃\0000a0\0000a0\0000a0┗━ ";
+}
+table#privileges td.depth4.restriction.lastBranch label:before {
+    content: "\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0┣━ ";
+}
+table#privileges td.depth4.restriction.lastSibling.lastBranch label:before {
+    content: "\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0\0000a0┗━ ";
+}
+
+.restriction-row input,
+table#privileges input {
+    width: auto;
+    margin-bottom: revert;
+}
+
+fieldset#ace-privileges {
+    margin-bottom: 20px;
+}
+
+form#modifyAceForm > div label {
+    display: block;
+}
+form#modifyAceForm div select {
+    width: 100%;
+}
+
+form#modifyAceForm div.form-buttons {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+dialog#restrictionsDialog {
+    min-width: 400px;
+    max-width: 70%;
+    max-height: 70%;
+    overflow:auto;
+}
+dialog#restrictionsDialog h3 {
+    margin-block-start: 0px;
+}
+
+p.restriction-row label {
+    display: block;
+}
+p.restriction-row span.restriction-values,
+p.restriction-row span.restriction-value {
+    display: block;
+    margin-left: 25px;
+}
+p.restriction-row span.restriction-values input[type='text'] {
+    width: calc(100% - 100px);
+}
+p.restriction-row span.restriction-value input[type='text'] {
+    width: calc(100% - 40px);
+}
+p.restriction-row button {
+    width: 25px;
+    padding: 0.5em 0.6em;
+    vertical-align: top;
+}
+#modifyAceRestrictionsForm button:disabled {
+    background-color: revert;
+    color: revert;
+}
