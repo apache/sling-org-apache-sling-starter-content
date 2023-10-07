@@ -25,8 +25,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonValue;
 
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
