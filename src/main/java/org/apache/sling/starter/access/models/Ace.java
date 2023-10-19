@@ -317,7 +317,8 @@ public class Ace extends AccessFormPage {
 
     /**
      * Populate the restriction item list from data from a previously failed POST request
-     * @param list the list of restriction items
+     * @param allowMap map of allowed privileges to the list of restriction items
+     * @param denyMap map of denied privileges to the list of restriction items
      * @param srMap map where the key is the restriction name and the value is the restriction definition
      * @return map of field values that were found in the form context
      */
