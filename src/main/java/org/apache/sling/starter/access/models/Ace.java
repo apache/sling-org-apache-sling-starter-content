@@ -39,14 +39,14 @@ import javax.jcr.Session;
 import javax.jcr.Workspace;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonBuilderFactory;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonString;
-import javax.json.JsonValue;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonBuilderFactory;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
 
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.JackrabbitWorkspace;
@@ -317,7 +317,8 @@ public class Ace extends AccessFormPage {
 
     /**
      * Populate the restriction item list from data from a previously failed POST request
-     * @param list the list of restriction items
+     * @param allowMap map of allowed privileges to the list of restriction items
+     * @param denyMap map of denied privileges to the list of restriction items
      * @param srMap map where the key is the restriction name and the value is the restriction definition
      * @return map of field values that were found in the form context
      */
