@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 const gulp        = require('gulp');
-const sass        = require('gulp-sass');
+const sass        = require('gulp-sass')(require('sass'));
 const header      = require('gulp-header');
 const cleanCSS   = require('gulp-clean-css');
 var concatCss = require('gulp-concat-css');
@@ -50,8 +50,8 @@ gulp.task('styles', function() {
 });
 
 gulp.task('assets', function() {
-	gulp.src(['./src/{fonts,img}/**/*']).pipe(gulp.dest('./dist/initial-content/content/starter'));
+    return gulp.src(['./src/{fonts,img}/**/*'])
+        .pipe(gulp.dest('./dist/initial-content/content/starter'));
 });
 
-
-gulp.task('default', ['styles', 'assets'], function() {});
+gulp.task('default', gulp.series(gulp.parallel('styles', 'assets')));
