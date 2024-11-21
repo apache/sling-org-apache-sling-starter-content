@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.sling</groupId>
     <artifactId>sling-bundle-parent</artifactId>
-    <version>52</version>
+    <version>62</version>
     <relativePath />
   </parent>
 
@@ -44,6 +44,7 @@
   </scm>
   
   <properties>
+    <sling.java.version>11</sling.java.version>
     <frontend.target>target/frontend</frontend.target>
     <project.build.outputTimestamp>1697761852</project.build.outputTimestamp>
     <oak.version>1.16.0</oak.version>
