@@ -1,28 +1,28 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package org.apache.sling.starter.access.models;
 
-import static org.apache.sling.starter.access.models.AceUtilsTest.createMockPrivilege;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Workspace;
+import javax.jcr.security.AccessControlManager;
+import javax.jcr.security.Privilege;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -36,17 +36,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Workspace;
-import javax.jcr.security.AccessControlManager;
-import javax.jcr.security.Privilege;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonValue;
-
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.JackrabbitWorkspace;
 import org.apache.jackrabbit.api.security.authorization.PrivilegeManager;
@@ -70,6 +64,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.apache.sling.starter.access.models.AceUtilsTest.createMockPrivilege;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AceTest extends AccessFormPageTest {
     private static final String ACE_JSON = "{\n"
@@ -139,7 +141,8 @@ class AceTest extends AccessFormPageTest {
         acePage.getAce = Mockito.mock(GetAce.class);
 
         jcrSession = Mockito.mock(JackrabbitSession.class);
-        Mockito.when(acePage.request.getResourceResolver().adaptTo(Session.class)).thenReturn(jcrSession);
+        Mockito.when(acePage.request.getResourceResolver().adaptTo(Session.class))
+                .thenReturn(jcrSession);
 
         mockPrivilegeLookup();
         mockAuthorizableLookup();
@@ -150,7 +153,7 @@ class AceTest extends AccessFormPageTest {
     protected void mockPrincipalManager() throws RepositoryException {
         // mock principalMgr
         PrincipalManager principalMgr = Mockito.mock(PrincipalManager.class);
-        Mockito.when(((JackrabbitSession)jcrSession).getPrincipalManager()).thenReturn(principalMgr);
+        Mockito.when(((JackrabbitSession) jcrSession).getPrincipalManager()).thenReturn(principalMgr);
         Mockito.when(principalMgr.getPrincipal("testUser1")).thenReturn(() -> "testUser1");
         Mockito.when(principalMgr.getPrincipal("testGroup1")).thenReturn(new TestGroupPrincipal("testGroup1"));
     }
@@ -162,14 +165,15 @@ class AceTest extends AccessFormPageTest {
         repGlobDef = new RestrictionDefinitionImpl(AccessControlConstants.REP_GLOB, Type.STRING, isManditory);
         repNtNamesDef = new RestrictionDefinitionImpl(AccessControlConstants.REP_NT_NAMES, Type.STRINGS, isManditory);
         Mockito.when(restrictionProvider.getSupportedRestrictions(acePage.resource.getPath()))
-            .thenReturn(new HashSet<>(Arrays.asList(repGlobDef, repNtNamesDef)));
+                .thenReturn(new HashSet<>(Arrays.asList(repGlobDef, repNtNamesDef)));
     }
 
     protected void mockAuthorizableLookup() throws RepositoryException {
         // mock the authorizable lookup path
         UserManager userMgr = Mockito.mock(UserManager.class);
-        Mockito.when(acePage.request.getResourceResolver().adaptTo(Session.class)).thenReturn(jcrSession);
-        Mockito.when(((JackrabbitSession)jcrSession).getUserManager()).thenReturn(userMgr);
+        Mockito.when(acePage.request.getResourceResolver().adaptTo(Session.class))
+                .thenReturn(jcrSession);
+        Mockito.when(((JackrabbitSession) jcrSession).getUserManager()).thenReturn(userMgr);
         User userAuthorizable = Mockito.mock(User.class);
         Mockito.when(userMgr.getAuthorizable("testUser1")).thenReturn(userAuthorizable);
     }
@@ -181,29 +185,19 @@ class AceTest extends AccessFormPageTest {
 
         Privilege repReadNodes = createMockPrivilege(PrivilegeConstants.REP_READ_NODES, new Privilege[0]);
         Privilege repReadProperties = createMockPrivilege(PrivilegeConstants.REP_READ_PROPERTIES, new Privilege[0]);
-        jcrRead = createMockPrivilege(PrivilegeConstants.JCR_READ, new Privilege[] {
-                repReadNodes,
-                repReadProperties
-        });
+        jcrRead = createMockPrivilege(PrivilegeConstants.JCR_READ, new Privilege[] {repReadNodes, repReadProperties});
         jcrWrite = createMockPrivilege(PrivilegeConstants.JCR_WRITE, new Privilege[0]);
 
-        Privilege all = createMockPrivilege(PrivilegeConstants.JCR_ALL, new Privilege[] {
-                jcrRead,
-                jcrWrite
-        });
+        Privilege all = createMockPrivilege(PrivilegeConstants.JCR_ALL, new Privilege[] {jcrRead, jcrWrite});
         Mockito.when(acm.privilegeFromName(PrivilegeConstants.JCR_ALL)).thenReturn(all);
         Mockito.when(acm.privilegeFromName(PrivilegeConstants.REP_READ_NODES)).thenReturn(repReadNodes);
-        Mockito.when(acm.privilegeFromName(PrivilegeConstants.REP_READ_PROPERTIES)).thenReturn(repReadProperties);
+        Mockito.when(acm.privilegeFromName(PrivilegeConstants.REP_READ_PROPERTIES))
+                .thenReturn(repReadProperties);
         Mockito.when(acm.privilegeFromName(PrivilegeConstants.JCR_READ)).thenReturn(jcrRead);
         Mockito.when(acm.privilegeFromName(PrivilegeConstants.JCR_WRITE)).thenReturn(jcrWrite);
 
-        Mockito.when(acm.getSupportedPrivileges(acePage.getAcePath())).thenReturn(new Privilege[] {
-                all,
-                jcrRead,
-                repReadNodes,
-                repReadNodes,
-                jcrWrite
-        });
+        Mockito.when(acm.getSupportedPrivileges(acePage.getAcePath()))
+                .thenReturn(new Privilege[] {all, jcrRead, repReadNodes, repReadNodes, jcrWrite});
     }
 
     /**
@@ -235,7 +229,7 @@ class AceTest extends AccessFormPageTest {
 
     /**
      * Test method for {@link org.apache.sling.starter.access.models.Ace#getIsInvalidPrincipal()}.
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     @Test
     void testGetIsInvalidPrincipal() throws RepositoryException {
@@ -254,7 +248,7 @@ class AceTest extends AccessFormPageTest {
 
     /**
      * Test method for {@link org.apache.sling.starter.access.models.Ace#isExists()}.
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     @Test
     void testIsExists() throws RepositoryException {
@@ -268,7 +262,7 @@ class AceTest extends AccessFormPageTest {
 
     /**
      * Test method for {@link org.apache.sling.starter.access.models.Ace#getPrivileges()}.
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     @Test
     void testGetPrivileges() throws RepositoryException {
@@ -290,7 +284,7 @@ class AceTest extends AccessFormPageTest {
             aceJson = jsonReader.readObject();
         }
         Mockito.when(acePage.getAce.getAce(jcrSession, acePage.resource.getPath(), "testUser1"))
-            .thenReturn(aceJson);
+                .thenReturn(aceJson);
 
         Map<String, String[]> rawReqParams = new HashMap<>();
         RequestParameterMap requestParameterMap = new RequestParameterMapImpl(rawReqParams);
@@ -313,14 +307,17 @@ class AceTest extends AccessFormPageTest {
         RequestParameterMap requestParameterMap = new RequestParameterMapImpl(rawReqParams);
         Mockito.when(acePage.request.getRequestParameterMap()).thenReturn(requestParameterMap);
 
-        Map<String, List<RestrictionItem>> postedAllowRestrictionsMap = new HashMap<>(); 
-        Map<String, List<RestrictionItem>> postedDenyRestrictionsMap = new HashMap<>(); 
-        Map<String, String[]> entriesMap = acePage.populateEntriesFromPreviousFailedPost(postedAllowRestrictionsMap,
-                postedDenyRestrictionsMap, acePage.toSrMap(acePage.getSupportedRestrictions()));
+        Map<String, List<RestrictionItem>> postedAllowRestrictionsMap = new HashMap<>();
+        Map<String, List<RestrictionItem>> postedDenyRestrictionsMap = new HashMap<>();
+        Map<String, String[]> entriesMap = acePage.populateEntriesFromPreviousFailedPost(
+                postedAllowRestrictionsMap,
+                postedDenyRestrictionsMap,
+                acePage.toSrMap(acePage.getSupportedRestrictions()));
         assertNotNull(entriesMap);
         assertEquals(2, entriesMap.size());
         assertArrayEquals(new String[] {"glob1"}, entriesMap.get("restriction@jcr:read@rep:glob@Allow"));
-        assertArrayEquals(new String[] {"ntNames1", "ntNames2"}, entriesMap.get("restriction@jcr:write@rep:ntNames@Deny"));
+        assertArrayEquals(
+                new String[] {"ntNames1", "ntNames2"}, entriesMap.get("restriction@jcr:write@rep:ntNames@Deny"));
     }
 
     /**
@@ -355,14 +352,15 @@ class AceTest extends AccessFormPageTest {
 
     /**
      * Test method for {@link org.apache.sling.starter.access.models.Ace#getSupportedOrRegisteredPrivileges(javax.jcr.Session, java.lang.String)}.
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     @Test
     void testGetSupportedOrRegisteredPrivileges() throws RepositoryException {
         // mock that the resource does exist
         Mockito.when(jcrSession.nodeExists(acePage.getAcePath())).thenReturn(true);
         @NotNull
-        Privilege[] supportedOrRegisteredPrivileges = acePage.getSupportedOrRegisteredPrivileges(jcrSession, acePage.getAcePath());
+        Privilege[] supportedOrRegisteredPrivileges =
+                acePage.getSupportedOrRegisteredPrivileges(jcrSession, acePage.getAcePath());
         assertNotNull(supportedOrRegisteredPrivileges);
         assertEquals(5, supportedOrRegisteredPrivileges.length);
         assertTrue(Stream.of(supportedOrRegisteredPrivileges).anyMatch(p -> jcrRead.equals(p)));
@@ -373,11 +371,8 @@ class AceTest extends AccessFormPageTest {
         Workspace workspace = Mockito.mock(JackrabbitWorkspace.class);
         Mockito.when(jcrSession.getWorkspace()).thenReturn(workspace);
         PrivilegeManager privilegeManager = Mockito.mock(PrivilegeManager.class);
-        Mockito.when(((JackrabbitWorkspace)workspace).getPrivilegeManager()).thenReturn(privilegeManager);
-        Mockito.when(privilegeManager.getRegisteredPrivileges()).thenReturn(new Privilege[] {
-                jcrRead,
-                jcrWrite
-        });
+        Mockito.when(((JackrabbitWorkspace) workspace).getPrivilegeManager()).thenReturn(privilegeManager);
+        Mockito.when(privilegeManager.getRegisteredPrivileges()).thenReturn(new Privilege[] {jcrRead, jcrWrite});
         supportedOrRegisteredPrivileges = acePage.getSupportedOrRegisteredPrivileges(jcrSession, Ace.PATH_REPOSITORY);
         assertNotNull(supportedOrRegisteredPrivileges);
         assertEquals(2, supportedOrRegisteredPrivileges.length);
@@ -387,14 +382,15 @@ class AceTest extends AccessFormPageTest {
 
     /**
      * Test method for {@link org.apache.sling.starter.access.models.Ace#initialPrivilegesMap(java.util.Map, java.lang.String)}.
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     @Test
     void testInitialPrivilegesMap() throws RepositoryException {
         Map<Privilege, String> privilegeLongestPathMap = AceUtils.getPrivilegeLongestPathMap(jcrSession);
         // mock that the resource does exist
         Mockito.when(jcrSession.nodeExists(acePage.getAcePath())).thenReturn(true);
-        Map<Privilege, PrivilegeItem> initialPrivilegesMap = acePage.initialPrivilegesMap(privilegeLongestPathMap, acePage.getAcePath());
+        Map<Privilege, PrivilegeItem> initialPrivilegesMap =
+                acePage.initialPrivilegesMap(privilegeLongestPathMap, acePage.getAcePath());
         assertNotNull(initialPrivilegesMap);
         assertEquals(4, initialPrivilegesMap.size());
         assertTrue(initialPrivilegesMap.containsKey(jcrRead));
@@ -403,7 +399,7 @@ class AceTest extends AccessFormPageTest {
 
     /**
      * Test method for {@link org.apache.sling.starter.access.models.Ace#getPersistedPrivilegesMap()}.
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     @Test
     void testGetPersistedPrivilegesMap() throws RepositoryException {
@@ -415,7 +411,7 @@ class AceTest extends AccessFormPageTest {
             aceJson = jsonReader.readObject();
         }
         Mockito.when(acePage.getAce.getAce(jcrSession, acePage.resource.getPath(), "testUser1"))
-            .thenReturn(aceJson);
+                .thenReturn(aceJson);
 
         Map<Privilege, PrivilegeItem> persistedPrivilegesMap = acePage.getPersistedPrivilegesMap();
         assertNotNull(persistedPrivilegesMap);
@@ -434,11 +430,14 @@ class AceTest extends AccessFormPageTest {
                 JsonReader jsonReader = Json.createReader(strReader)) {
             restrictionsJson = jsonReader.readObject();
         }
-        List<RestrictionItem> jsonToRestrictionItems = acePage.jsonToRestrictionItems(acePage.toSrMap(acePage.getSupportedRestrictions()), restrictionsJson);
+        List<RestrictionItem> jsonToRestrictionItems =
+                acePage.jsonToRestrictionItems(acePage.toSrMap(acePage.getSupportedRestrictions()), restrictionsJson);
         assertNotNull(jsonToRestrictionItems);
         assertEquals(2, jsonToRestrictionItems.size());
-        assertTrue(jsonToRestrictionItems.stream().anyMatch(p -> repGlobDef.getName().equals(p.getName())));
-        assertTrue(jsonToRestrictionItems.stream().anyMatch(p -> repNtNamesDef.getName().equals(p.getName())));
+        assertTrue(jsonToRestrictionItems.stream()
+                .anyMatch(p -> repGlobDef.getName().equals(p.getName())));
+        assertTrue(jsonToRestrictionItems.stream()
+                .anyMatch(p -> repNtNamesDef.getName().equals(p.getName())));
     }
 
     /**
@@ -467,7 +466,7 @@ class AceTest extends AccessFormPageTest {
 
     /**
      * Test method for {@link org.apache.sling.starter.access.models.Ace#getPrivilegeAggregationsAsJSON()}.
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     @Test
     void testGetPrivilegeAggregationsAsJSON() throws RepositoryException {
@@ -487,7 +486,7 @@ class AceTest extends AccessFormPageTest {
 
     /**
      * Test method for {@link org.apache.sling.starter.access.models.Ace#getExistingRestrictionNamesAsJSON()}.
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     @Test
     void testGetExistingRestrictionNamesAsJSON() throws RepositoryException {
@@ -503,10 +502,10 @@ class AceTest extends AccessFormPageTest {
         assertNotNull(restrictionNamesJson);
         JsonValue allow = restrictionNamesJson.get("allow");
         assertTrue(allow instanceof JsonArray);
-        assertEquals(0, ((JsonArray)allow).size());
+        assertEquals(0, ((JsonArray) allow).size());
         JsonValue deny = restrictionNamesJson.get("deny");
         assertTrue(deny instanceof JsonArray);
-        assertEquals(0, ((JsonArray)deny).size());
+        assertEquals(0, ((JsonArray) deny).size());
 
         // try again with existing restrictions
         mockPersistedPrivileges(ACE_JSON_WITH_RESTRICTIONS);
@@ -519,12 +518,12 @@ class AceTest extends AccessFormPageTest {
         assertNotNull(restrictionNamesJson);
         allow = restrictionNamesJson.get("allow");
         assertTrue(allow instanceof JsonArray);
-        assertEquals(1, ((JsonArray)allow).size());
-        assertEquals("jcr:read@rep:ntNames", ((JsonArray)allow).getString(0));
+        assertEquals(1, ((JsonArray) allow).size());
+        assertEquals("jcr:read@rep:ntNames", ((JsonArray) allow).getString(0));
         deny = restrictionNamesJson.get("deny");
         assertTrue(deny instanceof JsonArray);
-        assertEquals(1, ((JsonArray)deny).size());
-        assertEquals("jcr:write@rep:glob", ((JsonArray)deny).getString(0));
+        assertEquals(1, ((JsonArray) deny).size());
+        assertEquals("jcr:write@rep:glob", ((JsonArray) deny).getString(0));
     }
 
     /**
@@ -539,7 +538,7 @@ class AceTest extends AccessFormPageTest {
 
     /**
      * Test method for {@link org.apache.sling.starter.access.models.Ace#getOrderList()}.
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     @Test
     void testGetOrderList() throws RepositoryException {
@@ -549,7 +548,7 @@ class AceTest extends AccessFormPageTest {
             aclJson = jsonReader.readObject();
         }
         Mockito.when(acePage.getAcl.getAcl(jcrSession, acePage.resource.getPath()))
-            .thenReturn(aclJson);
+                .thenReturn(aclJson);
 
         Collection<PrincipalPrivilege> orderList = acePage.getOrderList();
         assertNotNull(orderList);
@@ -564,12 +563,10 @@ class AceTest extends AccessFormPageTest {
      */
     @Test
     void testFieldValuesFromReqParams() {
-        RequestParameter [] paramValues = new RequestParameter[] {
-                new RequestParameterImpl("key1", "value1"),
-                new RequestParameterImpl("key1", "value2"),
+        RequestParameter[] paramValues = new RequestParameter[] {
+            new RequestParameterImpl("key1", "value1"), new RequestParameterImpl("key1", "value2"),
         };
-        assertArrayEquals(new String[] {"value1", "value2"}, 
-                acePage.fieldValuesFromReqParams(paramValues));
+        assertArrayEquals(new String[] {"value1", "value2"}, acePage.fieldValuesFromReqParams(paramValues));
     }
 
     /**
@@ -588,7 +585,8 @@ class AceTest extends AccessFormPageTest {
         assertNotNull(fieldValuesForPattern);
         assertEquals(2, fieldValuesForPattern.size());
         assertArrayEquals(new String[] {"glob1"}, fieldValuesForPattern.get("restriction@jcr:read@rep:glob@Allow"));
-        assertArrayEquals(new String[] {"ntNames1", "ntNames2"}, fieldValuesForPattern.get("restriction@jcr:write@rep:ntNames@Deny"));
+        assertArrayEquals(
+                new String[] {"ntNames1", "ntNames2"},
+                fieldValuesForPattern.get("restriction@jcr:write@rep:ntNames@Deny"));
     }
-
 }
