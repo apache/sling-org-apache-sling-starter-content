@@ -1,43 +1,45 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package org.apache.sling.starter.access.models;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
-
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
 import org.apache.sling.jcr.jackrabbit.accessmanager.GetAcl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AclTest extends AccessFormPageTest {
     static final String ACL_JSON = "{\n"
@@ -84,7 +86,8 @@ class AclTest extends AccessFormPageTest {
 
         aclPage.getAcl = Mockito.mock(GetAcl.class);
         jcrSession = Mockito.mock(JackrabbitSession.class);
-        Mockito.when(aclPage.request.getResourceResolver().adaptTo(Session.class)).thenReturn(jcrSession);
+        Mockito.when(aclPage.request.getResourceResolver().adaptTo(Session.class))
+                .thenReturn(jcrSession);
     }
 
     /**
@@ -93,7 +96,7 @@ class AclTest extends AccessFormPageTest {
     @Test
     void testGetPrincipals() throws RepositoryException {
         PrincipalManager principalMgr = Mockito.mock(PrincipalManager.class);
-        Mockito.when(((JackrabbitSession)jcrSession).getPrincipalManager()).thenReturn(principalMgr);
+        Mockito.when(((JackrabbitSession) jcrSession).getPrincipalManager()).thenReturn(principalMgr);
         Mockito.when(principalMgr.getPrincipal("testUser1")).thenReturn(() -> "testUser1");
         Mockito.when(principalMgr.getPrincipal("testGroup1")).thenReturn(new TestGroupPrincipal("testGroup1"));
 
@@ -103,7 +106,7 @@ class AclTest extends AccessFormPageTest {
             aclJson = jsonReader.readObject();
         }
         Mockito.when(aclPage.getAcl.getAcl(jcrSession, aclPage.resource.getPath()))
-            .thenReturn(aclJson);
+                .thenReturn(aclJson);
 
         Collection<PrincipalPrivilege> principals = aclPage.getPrincipals();
         assertNotNull(principals);
@@ -125,5 +128,4 @@ class AclTest extends AccessFormPageTest {
         assertTrue(candidateGroup.isDeny());
         assertTrue(candidateGroup.getIsGroup());
     }
-
 }

@@ -1,18 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package org.apache.sling.starter.access.models;
 
@@ -39,8 +41,14 @@ public class PrivilegeItem {
     public PrivilegeItem(String name, boolean granted, boolean denied, String longestPath) {
         this(name, granted, denied, longestPath, Collections.emptyList(), Collections.emptyList());
     }
-    public PrivilegeItem(String name, boolean granted, boolean denied, String longestPath, 
-            List<RestrictionItem> allowRestrictions, List<RestrictionItem> denyRestrictions) {
+
+    public PrivilegeItem(
+            String name,
+            boolean granted,
+            boolean denied,
+            String longestPath,
+            List<RestrictionItem> allowRestrictions,
+            List<RestrictionItem> denyRestrictions) {
         super();
         this.name = name;
         this.granted = granted;
@@ -97,7 +105,7 @@ public class PrivilegeItem {
 
     public void addExtraCssClass(String addClass) {
         if (this.extraCssClasses == null) {
-            this.extraCssClasses  = addClass;
+            this.extraCssClasses = addClass;
         } else {
             this.extraCssClasses = String.format("%s %s", this.extraCssClasses, addClass);
         }
@@ -128,6 +136,7 @@ public class PrivilegeItem {
     public void setAllowRestrictions(List<RestrictionItem> restrictions) {
         this.allowRestrictions = restrictions;
     }
+
     public void setDenyRestrictions(List<RestrictionItem> restrictions) {
         this.denyRestrictions = restrictions;
     }
@@ -182,5 +191,4 @@ public class PrivilegeItem {
         }
         return Collections.emptySet();
     }
-
 }

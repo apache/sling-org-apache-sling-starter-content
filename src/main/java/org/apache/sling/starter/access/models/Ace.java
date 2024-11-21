@@ -1,20 +1,29 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 package org.apache.sling.starter.access.models;
+
+import javax.annotation.PostConstruct;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Workspace;
+import javax.jcr.security.AccessControlManager;
+import javax.jcr.security.Privilege;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -33,12 +42,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Workspace;
-import javax.jcr.security.AccessControlManager;
-import javax.jcr.security.Privilege;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonArrayBuilder;
@@ -47,7 +50,6 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
-
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.JackrabbitWorkspace;
 import org.apache.jackrabbit.api.security.authorization.PrivilegeManager;
@@ -73,18 +75,19 @@ import org.jetbrains.annotations.Nullable;
 /**
  * The ace page options.
  */
-@Model(adaptables=SlingHttpServletRequest.class)
+@Model(adaptables = SlingHttpServletRequest.class)
 public class Ace extends AccessFormPage {
     // for principal ace
     protected static final String PATH_REPOSITORY = "/:repository";
 
     // for matching restriction request parameters
     protected static final Pattern RESTRICTION_PATTERN = Pattern.compile("^restriction@([^@]+)@([^@]+)@(Allow|Deny)$");
-    protected static final Pattern RESTRICTION_PATTERN_DELETE = Pattern.compile(String.format("^restriction@([^@]+)@([^@]+)%s$",
-            SlingPostConstants.SUFFIX_DELETE));
+    protected static final Pattern RESTRICTION_PATTERN_DELETE =
+            Pattern.compile(String.format("^restriction@([^@]+)@([^@]+)%s$", SlingPostConstants.SUFFIX_DELETE));
 
     // use these hints to influence the order that the privileges are displayed
     protected static final Map<String, Integer> privilegesPriority = createPrivilegesPriorityMap();
+
     protected static Map<String, Integer> createPrivilegesPriorityMap() {
         Map<String, Integer> myMap = new HashMap<>();
         myMap.put(PrivilegeConstants.JCR_READ, 1);
@@ -129,13 +132,13 @@ public class Ace extends AccessFormPage {
         if (principalId != null && !principalId.isEmpty()) {
             Session session = request.getResourceResolver().adaptTo(Session.class);
             if (session instanceof JackrabbitSession) {
-                UserManager userManager = ((JackrabbitSession)session).getUserManager();
+                UserManager userManager = ((JackrabbitSession) session).getUserManager();
                 if (userManager != null) {
                     Authorizable authorizable = userManager.getAuthorizable(principalId);
                     if (authorizable != null) {
                         isInValidPrincipal = false;
                     } else {
-                        //no user/group matches the supplied principal id
+                        // no user/group matches the supplied principal id
                     }
                 }
             }
@@ -153,26 +156,27 @@ public class Ace extends AccessFormPage {
     }
 
     public Collection<PrivilegeItem> getPrivileges() throws RepositoryException {
-        Map<Privilege, PrivilegeItem> privilegesMap = getPersistedPrivilegesMap(); 
+        Map<Privilege, PrivilegeItem> privilegesMap = getPersistedPrivilegesMap();
         if (privilegesMap == null || privilegesMap.isEmpty()) {
             return Collections.emptyList();
         }
 
-        //make a temp map for quick lookup below
+        // make a temp map for quick lookup below
         Set<RestrictionDefinition> supportedRestrictions = getSupportedRestrictions();
         Map<String, RestrictionDefinition> srMap = toSrMap(supportedRestrictions);
 
-        Map<String, List<RestrictionItem>> postedAllowRestrictionsMap = new HashMap<>(); 
-        Map<String, List<RestrictionItem>> postedDenyRestrictionsMap = new HashMap<>(); 
-        Map<String, String[]> fieldValues = populateEntriesFromPreviousFailedPost(postedAllowRestrictionsMap, postedDenyRestrictionsMap, srMap);
+        Map<String, List<RestrictionItem>> postedAllowRestrictionsMap = new HashMap<>();
+        Map<String, List<RestrictionItem>> postedDenyRestrictionsMap = new HashMap<>();
+        Map<String, String[]> fieldValues =
+                populateEntriesFromPreviousFailedPost(postedAllowRestrictionsMap, postedDenyRestrictionsMap, srMap);
         Map<String, String[]> toDeleteFieldValues = getFieldValuesForPattern(RESTRICTION_PATTERN_DELETE);
-        //entries from the previous failed POST.
+        // entries from the previous failed POST.
         for (PrivilegeItem entry : privilegesMap.values()) {
             String privilegeName = entry.getName();
             // check for any submitted form fields in case of error and redisplay of the page
             String paramValue = request.getParameter(String.format("privilege@%s", privilegeName));
             if (paramValue != null) {
-                //req param was here from a failed post?
+                // req param was here from a failed post?
                 if ("granted".equals(paramValue)) {
                     entry.setGranted(true);
                 } else if ("denied".equals(paramValue)) {
@@ -182,7 +186,7 @@ public class Ace extends AccessFormPage {
                 // check for delete existing param
                 String paramDeleteValue = request.getParameter(String.format("privilege@%s@Delete", privilegeName));
                 if (paramDeleteValue != null) {
-                    //req param was here from a failed post?
+                    // req param was here from a failed post?
                     if ("granted".equals(paramDeleteValue)) {
                         entry.setGranted(false);
                     } else if ("denied".equals(paramDeleteValue)) {
@@ -191,12 +195,15 @@ public class Ace extends AccessFormPage {
                 }
             }
 
-            for (boolean forAllow : new boolean [] {true, false}) {
+            for (boolean forAllow : new boolean[] {true, false}) {
                 // first add items for any posted fields
-                Map<String, List<RestrictionItem>> postedRestrictionsMap = forAllow ? postedAllowRestrictionsMap : postedDenyRestrictionsMap;
-                List<RestrictionItem> newRestrictionsList = postedRestrictionsMap.computeIfAbsent(privilegeName, pn -> new ArrayList<>());
-                //now merge in any declared restrictions that were not posted
-                List<RestrictionItem> declaredRestrictions = forAllow ? entry.getAllowRestrictions() : entry.getDenyRestrictions();
+                Map<String, List<RestrictionItem>> postedRestrictionsMap =
+                        forAllow ? postedAllowRestrictionsMap : postedDenyRestrictionsMap;
+                List<RestrictionItem> newRestrictionsList =
+                        postedRestrictionsMap.computeIfAbsent(privilegeName, pn -> new ArrayList<>());
+                // now merge in any declared restrictions that were not posted
+                List<RestrictionItem> declaredRestrictions =
+                        forAllow ? entry.getAllowRestrictions() : entry.getDenyRestrictions();
                 if (declaredRestrictions != null && !declaredRestrictions.isEmpty()) {
                     for (RestrictionItem ri : declaredRestrictions) {
                         String restrictionName = ri.getName();
@@ -206,14 +213,15 @@ public class Ace extends AccessFormPage {
                         String fieldKey = String.format("%s@%s", fieldKeyPrefix, (forAllow ? "Allow" : "Deny"));
                         // skip it if it was requested to be deleted in the previous POST attempt
                         // or already handled above
-                        if (toDeleteFieldValues.containsKey(String.format("%s%s", fieldKeyPrefix, SlingPostConstants.SUFFIX_DELETE))) {
+                        if (toDeleteFieldValues.containsKey(
+                                String.format("%s%s", fieldKeyPrefix, SlingPostConstants.SUFFIX_DELETE))) {
                             addIt = false;
                         } else if (fieldValues.containsKey(fieldKey)) {
                             // mark the form posted item as exists since it also
                             //  had a persisted value
                             newRestrictionsList.stream()
-                                .filter(list -> list.getName().equals(restrictionName))
-                                .forEach(item -> item.setExists(true));
+                                    .filter(list -> list.getName().equals(restrictionName))
+                                    .forEach(item -> item.setExists(true));
                             addIt = false;
                         }
 
@@ -235,18 +243,18 @@ public class Ace extends AccessFormPage {
 
                 // populate restrictions to delete here.
                 toDeleteFieldValues.keySet().stream()
-                    .filter(key -> RESTRICTION_PATTERN_DELETE.matcher(key).matches())
-                    .forEach(key -> {
-                        Matcher matcher = RESTRICTION_PATTERN_DELETE.matcher(key);
-                        if (matcher.matches()) {
-                            String restrictionName = matcher.group(2);
-                            if (forAllow) {
-                                entry.addAllowRestrictionToDelete(restrictionName);
-                            } else {
-                                entry.addDenyRestrictionToDelete(restrictionName);
+                        .filter(key -> RESTRICTION_PATTERN_DELETE.matcher(key).matches())
+                        .forEach(key -> {
+                            Matcher matcher = RESTRICTION_PATTERN_DELETE.matcher(key);
+                            if (matcher.matches()) {
+                                String restrictionName = matcher.group(2);
+                                if (forAllow) {
+                                    entry.addAllowRestrictionToDelete(restrictionName);
+                                } else {
+                                    entry.addDenyRestrictionToDelete(restrictionName);
+                                }
                             }
-                        }
-                    });
+                        });
             }
         }
 
@@ -322,7 +330,8 @@ public class Ace extends AccessFormPage {
      * @param srMap map where the key is the restriction name and the value is the restriction definition
      * @return map of field values that were found in the form context
      */
-    protected Map<String, String[]> populateEntriesFromPreviousFailedPost(Map<String, List<RestrictionItem>> allowMap,
+    protected Map<String, String[]> populateEntriesFromPreviousFailedPost(
+            Map<String, List<RestrictionItem>> allowMap,
             Map<String, List<RestrictionItem>> denyMap,
             Map<String, RestrictionDefinition> srMap) {
         Map<String, String[]> toDeleteFieldValues = getFieldValuesForPattern(RESTRICTION_PATTERN_DELETE);
@@ -331,7 +340,7 @@ public class Ace extends AccessFormPage {
         for (Entry<String, String[]> entry : fieldValuesEntrySet) {
             String deleteKey = String.format("%s%s", entry.getKey(), SlingPostConstants.SUFFIX_DELETE);
             if (toDeleteFieldValues.containsKey(deleteKey)) {
-                //it was requested to be deleted in the previous POST attempt
+                // it was requested to be deleted in the previous POST attempt
                 continue;
             }
 
@@ -348,7 +357,7 @@ public class Ace extends AccessFormPage {
                     if (rd.getRequiredType().isArray()) {
                         value = strings;
                     } else if (strings.length > 0) {
-                        //use the first one?
+                        // use the first one?
                         value = strings[0];
                     }
 
@@ -368,12 +377,13 @@ public class Ace extends AccessFormPage {
      * @param list the list of restriction items
      * @param supportedRestrictions supported restrictions set
      */
-    protected void populateEntriesForMissingMandatoryRestrictions(List<RestrictionItem> list,
-            Set<RestrictionDefinition> supportedRestrictions) {
+    protected void populateEntriesForMissingMandatoryRestrictions(
+            List<RestrictionItem> list, Set<RestrictionDefinition> supportedRestrictions) {
         if (supportedRestrictions != null) {
             for (RestrictionDefinition rd : supportedRestrictions) {
-                if (rd.isMandatory() && list.stream().noneMatch(item -> item.getName().equals(rd.getName()))) {
-                    //missing it, so add an item to the list
+                if (rd.isMandatory()
+                        && list.stream().noneMatch(item -> item.getName().equals(rd.getName()))) {
+                    // missing it, so add an item to the list
                     RestrictionItem ri = new RestrictionItem(rd, null, false);
                     list.add(ri);
                 }
@@ -397,14 +407,14 @@ public class Ace extends AccessFormPage {
     /**
      * Calculates the supported privileges in the resource path exists, or the registered
      * privileges if the resource path does not exist
-     * 
+     *
      * @param jcrSession the current session
      * @param resourcePath the resource path to consider
      * @return
      * @throws RepositoryException
      */
-    protected @NotNull Privilege[] getSupportedOrRegisteredPrivileges(@NotNull Session jcrSession, @Nullable String resourcePath) 
-            throws RepositoryException {
+    protected @NotNull Privilege[] getSupportedOrRegisteredPrivileges(
+            @NotNull Session jcrSession, @Nullable String resourcePath) throws RepositoryException {
         Privilege[] supportedPrivileges = null;
         if (resourcePath != null && jcrSession.nodeExists(resourcePath)) {
             supportedPrivileges = jcrSession.getAccessControlManager().getSupportedPrivileges(resourcePath);
@@ -412,7 +422,7 @@ public class Ace extends AccessFormPage {
             // non-existing path. We can't determine what is supported there, so consider all registered privileges
             Workspace workspace = jcrSession.getWorkspace();
             if (workspace instanceof JackrabbitWorkspace) {
-                PrivilegeManager privilegeManager = ((JackrabbitWorkspace)workspace).getPrivilegeManager();
+                PrivilegeManager privilegeManager = ((JackrabbitWorkspace) workspace).getPrivilegeManager();
                 supportedPrivileges = privilegeManager.getRegisteredPrivileges();
             }
         }
@@ -425,15 +435,16 @@ public class Ace extends AccessFormPage {
         Privilege[] supportedPrivileges = null;
         try {
             Session jcrSession = request.getResourceResolver().adaptTo(Session.class);
-            supportedPrivileges = getSupportedOrRegisteredPrivileges(jcrSession,
-                    PATH_REPOSITORY.equals(acePath) ? null : acePath );
+            supportedPrivileges =
+                    getSupportedOrRegisteredPrivileges(jcrSession, PATH_REPOSITORY.equals(acePath) ? null : acePath);
         } catch (RepositoryException e) {
-            //ignore
+            // ignore
             supportedPrivileges = null;
         }
         if (supportedPrivileges != null) {
             for (Privilege privilege : supportedPrivileges) {
-                PrivilegeItem p1 = new PrivilegeItem(privilege.getName(), false, false, privilegeToLongestPath.get(privilege));
+                PrivilegeItem p1 =
+                        new PrivilegeItem(privilege.getName(), false, false, privilegeToLongestPath.get(privilege));
                 newMap.put(privilege, p1);
             }
         }
@@ -458,14 +469,15 @@ public class Ace extends AccessFormPage {
                 aceExists = true;
                 AccessControlManager acm = jcrSession.getAccessControlManager();
 
-                //make a temp map for quick lookup below
+                // make a temp map for quick lookup below
                 Set<RestrictionDefinition> supportedRestrictions = getSupportedRestrictions();
                 Map<String, RestrictionDefinition> srMap = toSrMap(supportedRestrictions);
 
                 JsonObject privileges = ace.getJsonObject("privileges");
                 for (String pn : privileges.keySet()) {
                     Privilege p = acm.privilegeFromName(pn);
-                    PrivilegeItem privilegeItem = persistedPrivilegesMap.computeIfAbsent(p, key -> new PrivilegeItem(key.getName(), false, false, privilegeToLongestPath.get(key)));
+                    PrivilegeItem privilegeItem = persistedPrivilegesMap.computeIfAbsent(
+                            p, key -> new PrivilegeItem(key.getName(), false, false, privilegeToLongestPath.get(key)));
 
                     JsonObject privilegeObj = privileges.getJsonObject(pn);
                     JsonValue allowJsonValue = privilegeObj.get("allow");
@@ -473,7 +485,8 @@ public class Ace extends AccessFormPage {
                         privilegeItem.setAllowExists(true);
                         privilegeItem.setGranted(true);
                         if (allowJsonValue instanceof JsonObject) {
-                            List<RestrictionItem> restrictionItems = jsonToRestrictionItems(srMap, (JsonObject)allowJsonValue);
+                            List<RestrictionItem> restrictionItems =
+                                    jsonToRestrictionItems(srMap, (JsonObject) allowJsonValue);
                             privilegeItem.setAllowRestrictions(restrictionItems);
                         }
                     }
@@ -482,7 +495,8 @@ public class Ace extends AccessFormPage {
                         privilegeItem.setDenyExists(true);
                         privilegeItem.setDenied(true);
                         if (denyJsonValue instanceof JsonObject) {
-                            List<RestrictionItem> restrictionItems = jsonToRestrictionItems(srMap, (JsonObject)denyJsonValue);
+                            List<RestrictionItem> restrictionItems =
+                                    jsonToRestrictionItems(srMap, (JsonObject) denyJsonValue);
                             privilegeItem.setDenyRestrictions(restrictionItems);
                         }
                     }
@@ -492,8 +506,8 @@ public class Ace extends AccessFormPage {
         return persistedPrivilegesMap;
     }
 
-    protected List<RestrictionItem> jsonToRestrictionItems(Map<String, RestrictionDefinition> srMap,
-            JsonObject restrictionsObj) {
+    protected List<RestrictionItem> jsonToRestrictionItems(
+            Map<String, RestrictionDefinition> srMap, JsonObject restrictionsObj) {
         List<RestrictionItem> restrictionItems = new ArrayList<>();
         for (Entry<String, JsonValue> entry : restrictionsObj.entrySet()) {
             String rn = entry.getKey();
@@ -502,14 +516,14 @@ public class Ace extends AccessFormPage {
                 Object value = null;
                 JsonValue jsonValue = entry.getValue();
                 if (jsonValue instanceof JsonArray) {
-                    JsonArray jsonArray = (JsonArray)jsonValue;
-                    String [] values = new String[jsonArray.size()];
+                    JsonArray jsonArray = (JsonArray) jsonValue;
+                    String[] values = new String[jsonArray.size()];
                     for (int i = 0; i < values.length; i++) {
                         values[i] = jsonArray.getString(i);
                     }
                     value = values;
                 } else if (jsonValue instanceof JsonString) {
-                    value = ((JsonString)jsonValue).getString();
+                    value = ((JsonString) jsonValue).getString();
                 }
                 restrictionItems.add(new RestrictionItem(rd, value, true));
             }
@@ -527,9 +541,9 @@ public class Ace extends AccessFormPage {
 
     public List<RestrictionDefinitionInfo> getSupportedRestrictionsInfo() {
         return getSupportedRestrictions().stream()
-            .map(rd -> new RestrictionDefinitionInfo(rd.getName(), rd))
-            .sorted(Comparator.comparing(RestrictionDefinitionInfo::getDisplayName))
-            .collect(Collectors.toList());
+                .map(rd -> new RestrictionDefinitionInfo(rd.getName(), rd))
+                .sorted(Comparator.comparing(RestrictionDefinitionInfo::getDisplayName))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -550,7 +564,8 @@ public class Ace extends AccessFormPage {
             if (aggregatePrivileges != null && aggregatePrivileges.length > 0) {
                 // order these so the client side iteration will process from the top down
                 List<Privilege> list = new ArrayList<>(Arrays.asList(aggregatePrivileges));
-                list.sort((Privilege o1, Privilege o2) -> privilegeToLongestPath.get(o1).compareTo(privilegeToLongestPath.get(o2)));
+                list.sort((Privilege o1, Privilege o2) ->
+                        privilegeToLongestPath.get(o1).compareTo(privilegeToLongestPath.get(o2)));
 
                 JsonArrayBuilder aggregateArray = factory.createArrayBuilder();
 
@@ -572,9 +587,9 @@ public class Ace extends AccessFormPage {
             JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
             Set<String> alreadyProcessed = new HashSet<>();
             for (PrivilegeItem pi : getPrivileges()) {
-                if ((forAllow && pi.getGranted()) ||
-                        (!forAllow && pi.getDenied())) {
-                    List<RestrictionItem> restrictions = forAllow ? pi.getAllowRestrictions() : pi.getDenyRestrictions();
+                if ((forAllow && pi.getGranted()) || (!forAllow && pi.getDenied())) {
+                    List<RestrictionItem> restrictions =
+                            forAllow ? pi.getAllowRestrictions() : pi.getDenyRestrictions();
                     for (RestrictionItem ri : restrictions) {
                         if (ri.isExists()) {
                             String name = String.format("%s@%s", pi.getName(), ri.getName());
@@ -599,12 +614,12 @@ public class Ace extends AccessFormPage {
     public Collection<PrincipalPrivilege> getOrderList() throws RepositoryException {
         List<PrincipalPrivilege> list = new ArrayList<>();
         Session jcrSession = request.getResourceResolver().adaptTo(Session.class);
-        PrincipalManager principalManager = ((JackrabbitSession)jcrSession).getPrincipalManager();
+        PrincipalManager principalManager = ((JackrabbitSession) jcrSession).getPrincipalManager();
         String pid = getPrincipalId();
         JsonObject acl = getAcl.getAcl(jcrSession, getAcePath());
         for (String uid : acl.keySet()) {
             if (pid != null && pid.equals(uid)) {
-                //skip it
+                // skip it
                 continue;
             }
             Principal principal = principalManager.getPrincipal(uid);
@@ -616,10 +631,10 @@ public class Ace extends AccessFormPage {
         return list;
     }
 
-    protected String [] fieldValuesFromReqParams(RequestParameter[] paramValues) {
+    protected String[] fieldValuesFromReqParams(RequestParameter[] paramValues) {
         String[] fieldValues = null;
         fieldValues = new String[paramValues.length];
-        for (int i=0; i < paramValues.length; i++) {
+        for (int i = 0; i < paramValues.length; i++) {
             fieldValues[i] = paramValues[i].getString();
         }
         return fieldValues;
@@ -628,22 +643,21 @@ public class Ace extends AccessFormPage {
     /**
      * Gets the values of the specified field from the request.  If not
      * supplied the values from the supplied resource are returned.
-     * 
+     *
      * @param keyPattern the regular expression to used to match against the field keys
      * @return the values of the field or empty map if not available
      */
     protected Map<String, String[]> getFieldValuesForPattern(Pattern keyPattern) {
         Map<String, String[]> resultMap = new HashMap<>();
 
-        @NotNull
-        RequestParameterMap requestParameterMap = request.getRequestParameterMap();
+        @NotNull RequestParameterMap requestParameterMap = request.getRequestParameterMap();
         Set<Entry<String, RequestParameter[]>> entrySet2 = requestParameterMap.entrySet();
         for (Entry<String, RequestParameter[]> entry : entrySet2) {
             String key2 = entry.getKey();
             if (!resultMap.containsKey(key2)) {
                 Matcher matcher = keyPattern.matcher(key2);
                 if (matcher.matches()) {
-                    //just use the original request value
+                    // just use the original request value
                     RequestParameter[] paramValues = entry.getValue();
                     if (paramValues != null) {
                         String[] fieldValues = fieldValuesFromReqParams(paramValues);
@@ -655,5 +669,4 @@ public class Ace extends AccessFormPage {
 
         return resultMap;
     }
-
 }

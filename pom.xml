@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
     Licensed to the Apache Software Foundation (ASF) under one
     or more contributor license agreements.  See the NOTICE file
@@ -19,124 +19,35 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.apache.sling</groupId>
-    <artifactId>sling-bundle-parent</artifactId>
-    <version>62</version>
-    <relativePath />
-  </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.sling</groupId>
+        <artifactId>sling-bundle-parent</artifactId>
+        <version>62</version>
+        <relativePath />
+    </parent>
 
-  <artifactId>org.apache.sling.starter.content</artifactId>
-  <version>1.0.15-SNAPSHOT</version>
+    <artifactId>org.apache.sling.starter.content</artifactId>
+    <version>1.0.15-SNAPSHOT</version>
 
-  <name>Apache Sling Starter Content</name>
-  <description>
-    This bundle provides content that is loaded in the JCR repository
-    for the Sling Starter.
-  </description>
+    <name>Apache Sling Starter Content</name>
+    <description>This bundle provides content that is loaded in the JCR repository
+    for the Sling Starter.</description>
 
-  <scm>
-    <connection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-starter-content.git</connection>
-    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-starter-content.git</developerConnection>
-    <url>https://github.com/apache/sling-org-apache-sling-starter-content.git</url>
-    <tag>HEAD</tag>
-  </scm>
-  
-  <properties>
-    <sling.java.version>11</sling.java.version>
-    <frontend.target>target/frontend</frontend.target>
-    <project.build.outputTimestamp>1697761852</project.build.outputTimestamp>
-    <oak.version>1.16.0</oak.version>
-    <junit-jupiter.version>5.10.0</junit-jupiter.version>
-  </properties>
+    <scm>
+        <connection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-starter-content.git</connection>
+        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-starter-content.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/apache/sling-org-apache-sling-starter-content.git</url>
+    </scm>
 
-  <build>
-  
-    <plugins>
-      <plugin>
-        <groupId>biz.aQute.bnd</groupId>
-        <artifactId>bnd-maven-plugin</artifactId>
-        <dependencies>
-            <dependency>
-                <groupId>org.apache.sling</groupId>
-                <artifactId>org.apache.sling.bnd.models</artifactId>
-                <version>1.0.0</version>
-            </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${basedir}/${frontend.target}</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/frontend</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>com.github.eirslett</groupId>
-        <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.15.1</version>
-        <configuration>
-            <installDirectory>${frontend.target}</installDirectory>
-            <workingDirectory>${frontend.target}</workingDirectory>
-        </configuration>
-        <executions>
-            <execution>
-                <id>install node and npm</id>
-                <goals>
-                    <goal>install-node-and-npm</goal>
-                </goals>
-                <configuration>
-                    <nodeVersion>v22.11.0</nodeVersion>
-                </configuration>
-            </execution>
-            <execution>
-                <id>npm install</id>
-                <goals>
-                    <goal>npm</goal>
-                </goals>
-                <configuration>
-                    <arguments>install</arguments>
-                </configuration>
-            </execution>
-            <execution>
-                <id>gulp build</id>
-                <goals>
-                    <goal>gulp</goal>
-                </goals>
-            </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                  <!-- No javadocs -->
-                    <excludePackageNames>
-                        org.apache.sling
-                    </excludePackageNames>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
+    <properties>
+        <sling.java.version>11</sling.java.version>
+        <frontend.target>target/frontend</frontend.target>
+        <project.build.outputTimestamp>1697761852</project.build.outputTimestamp>
+        <oak.version>1.16.0</oak.version>
+        <junit-jupiter.version>5.10.0</junit-jupiter.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -244,4 +155,89 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>biz.aQute.bnd</groupId>
+                <artifactId>bnd-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.sling</groupId>
+                        <artifactId>org.apache.sling.bnd.models</artifactId>
+                        <version>1.0.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <outputDirectory>${basedir}/${frontend.target}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/frontend</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.15.1</version>
+                <configuration>
+                    <installDirectory>${frontend.target}</installDirectory>
+                    <workingDirectory>${frontend.target}</workingDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v22.11.0</nodeVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>gulp build</id>
+                        <goals>
+                            <goal>gulp</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <!-- No javadocs -->
+                    <excludePackageNames>org.apache.sling</excludePackageNames>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
