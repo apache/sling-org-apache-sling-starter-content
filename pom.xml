@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>org.apache.sling.starter.content</artifactId>
-    <version>1.0.15-SNAPSHOT</version>
+    <version>1.0.16</version>
 
     <name>Apache Sling Starter Content</name>
     <description>This bundle provides content that is loaded in the JCR repository
@@ -37,14 +37,14 @@
     <scm>
         <connection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-starter-content.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-starter-content.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>org.apache.sling.starter.content-1.0.16</tag>
         <url>https://github.com/apache/sling-org-apache-sling-starter-content.git</url>
     </scm>
 
     <properties>
         <sling.java.version>11</sling.java.version>
         <frontend.target>target/frontend</frontend.target>
-        <project.build.outputTimestamp>1697761852</project.build.outputTimestamp>
+        <project.build.outputTimestamp>1734087567</project.build.outputTimestamp>
         <oak.version>1.16.0</oak.version>
         <junit-jupiter.version>5.10.0</junit-jupiter.version>
     </properties>
