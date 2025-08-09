@@ -21,8 +21,8 @@ package org.apache.sling.starter.access.models;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.jcr.jackrabbit.accessmanager.PrivilegesInfo;
@@ -48,8 +48,8 @@ abstract class AccessFormPageTest {
         page = createPageModel();
         page.privilegesInfo = Mockito.mock(PrivilegesInfo.class);
         page.resource = Mockito.mock(Resource.class);
-        page.request = Mockito.mock(SlingHttpServletRequest.class);
-        page.response = Mockito.mock(SlingHttpServletResponse.class);
+        page.request = Mockito.mock(SlingJakartaHttpServletRequest.class);
+        page.response = Mockito.mock(SlingJakartaHttpServletResponse.class);
 
         rr = Mockito.mock(ResourceResolver.class);
         currentNode = Mockito.mock(Node.class);
