@@ -32,12 +32,12 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
-import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
 import org.apache.sling.jcr.jackrabbit.accessmanager.GetAcl;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 
-@Model(adaptables = SlingHttpServletRequest.class)
+@Model(adaptables = SlingJakartaHttpServletRequest.class)
 public class Acl extends AccessFormPage {
     private List<PrincipalPrivilege> principalPrivilegeList;
 

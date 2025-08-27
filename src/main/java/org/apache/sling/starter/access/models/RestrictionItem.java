@@ -49,20 +49,16 @@ public class RestrictionItem {
 
     public String getValue() throws RepositoryException {
         String v = null;
-        if (value instanceof Value) {
-            v = ((Value) value).getString();
-        } else if (value instanceof Value[]) {
-            Value[] va = (Value[]) value;
+        if (value instanceof Value valueObj) {
+            v = valueObj.getString();
+        } else if (value instanceof Value[] va) {
             if (va.length > 0) {
                 v = va[0].getString();
             }
-        } else if (value instanceof String) {
-            v = (String) value;
-        } else if (value instanceof String[]) {
-            String[] values = (String[]) value;
-            if (values.length > 0) {
-                v = values[0];
-            }
+        } else if (value instanceof String valueString) {
+            v = valueString;
+        } else if (value instanceof String[] values && values.length > 0) {
+            v = values[0];
         }
 
         if (v == null) {
@@ -74,17 +70,16 @@ public class RestrictionItem {
 
     public List<String> getValues() throws RepositoryException {
         List<String> values = new ArrayList<>();
-        if (value instanceof Value) {
-            values.add(((Value) value).getString());
-        } else if (value instanceof Value[]) {
-            Value[] va = (Value[]) value;
+        if (value instanceof Value valueObj) {
+            values.add(valueObj.getString());
+        } else if (value instanceof Value[] va) {
             for (Value v : va) {
                 values.add(v.getString());
             }
-        } else if (value instanceof String) {
-            values.add((String) value);
-        } else if (value instanceof String[]) {
-            values.addAll(Arrays.asList((String[]) value));
+        } else if (value instanceof String stringValue) {
+            values.add(stringValue);
+        } else if (value instanceof String[] stringValues) {
+            values.addAll(Arrays.asList(stringValues));
         }
         if (values.isEmpty()) {
             // empty string if no values yet

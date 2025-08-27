@@ -40,7 +40,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
@@ -59,7 +58,7 @@ import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionDefinition;
 import org.apache.jackrabbit.oak.spi.security.authorization.restriction.RestrictionProvider;
 import org.apache.jackrabbit.oak.spi.security.privilege.PrivilegeConstants;
-import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
 import org.apache.sling.api.request.RequestParameter;
 import org.apache.sling.api.request.RequestParameterMap;
 import org.apache.sling.api.resource.ResourceNotFoundException;
@@ -75,7 +74,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * The ace page options.
  */
-@Model(adaptables = SlingHttpServletRequest.class)
+@Model(adaptables = SlingJakartaHttpServletRequest.class)
 public class Ace extends AccessFormPage {
     // for principal ace
     protected static final String PATH_REPOSITORY = "/:repository";
@@ -131,8 +130,8 @@ public class Ace extends AccessFormPage {
         boolean isInValidPrincipal = true;
         if (principalId != null && !principalId.isEmpty()) {
             Session session = request.getResourceResolver().adaptTo(Session.class);
-            if (session instanceof JackrabbitSession) {
-                UserManager userManager = ((JackrabbitSession) session).getUserManager();
+            if (session instanceof JackrabbitSession jackrabbitSession) {
+                UserManager userManager = jackrabbitSession.getUserManager();
                 if (userManager != null) {
                     Authorizable authorizable = userManager.getAuthorizable(principalId);
                     if (authorizable != null) {
@@ -421,8 +420,8 @@ public class Ace extends AccessFormPage {
         } else {
             // non-existing path. We can't determine what is supported there, so consider all registered privileges
             Workspace workspace = jcrSession.getWorkspace();
-            if (workspace instanceof JackrabbitWorkspace) {
-                PrivilegeManager privilegeManager = ((JackrabbitWorkspace) workspace).getPrivilegeManager();
+            if (workspace instanceof JackrabbitWorkspace jackrabbitWorkspace) {
+                PrivilegeManager privilegeManager = jackrabbitWorkspace.getPrivilegeManager();
                 supportedPrivileges = privilegeManager.getRegisteredPrivileges();
             }
         }
@@ -484,9 +483,8 @@ public class Ace extends AccessFormPage {
                     if (allowJsonValue != null) {
                         privilegeItem.setAllowExists(true);
                         privilegeItem.setGranted(true);
-                        if (allowJsonValue instanceof JsonObject) {
-                            List<RestrictionItem> restrictionItems =
-                                    jsonToRestrictionItems(srMap, (JsonObject) allowJsonValue);
+                        if (allowJsonValue instanceof JsonObject jsonObject) {
+                            List<RestrictionItem> restrictionItems = jsonToRestrictionItems(srMap, jsonObject);
                             privilegeItem.setAllowRestrictions(restrictionItems);
                         }
                     }
@@ -494,9 +492,8 @@ public class Ace extends AccessFormPage {
                     if (denyJsonValue != null) {
                         privilegeItem.setDenyExists(true);
                         privilegeItem.setDenied(true);
-                        if (denyJsonValue instanceof JsonObject) {
-                            List<RestrictionItem> restrictionItems =
-                                    jsonToRestrictionItems(srMap, (JsonObject) denyJsonValue);
+                        if (denyJsonValue instanceof JsonObject jsonObject) {
+                            List<RestrictionItem> restrictionItems = jsonToRestrictionItems(srMap, jsonObject);
                             privilegeItem.setDenyRestrictions(restrictionItems);
                         }
                     }
@@ -515,15 +512,14 @@ public class Ace extends AccessFormPage {
             if (rd != null) {
                 Object value = null;
                 JsonValue jsonValue = entry.getValue();
-                if (jsonValue instanceof JsonArray) {
-                    JsonArray jsonArray = (JsonArray) jsonValue;
+                if (jsonValue instanceof JsonArray jsonArray) {
                     String[] values = new String[jsonArray.size()];
                     for (int i = 0; i < values.length; i++) {
                         values[i] = jsonArray.getString(i);
                     }
                     value = values;
-                } else if (jsonValue instanceof JsonString) {
-                    value = ((JsonString) jsonValue).getString();
+                } else if (jsonValue instanceof JsonString jsonString) {
+                    value = jsonString.getString();
                 }
                 restrictionItems.add(new RestrictionItem(rd, value, true));
             }
@@ -543,7 +539,7 @@ public class Ace extends AccessFormPage {
         return getSupportedRestrictions().stream()
                 .map(rd -> new RestrictionDefinitionInfo(rd.getName(), rd))
                 .sorted(Comparator.comparing(RestrictionDefinitionInfo::getDisplayName))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

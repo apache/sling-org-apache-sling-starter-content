@@ -20,15 +20,16 @@ package org.apache.sling.starter.access.models;
 
 import javax.annotation.PostConstruct;
 import javax.jcr.Node;
-import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.sling.api.SlingJakartaHttpServletRequest;
+import org.apache.sling.api.SlingJakartaHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.jcr.jackrabbit.accessmanager.PrivilegesInfo;
 import org.apache.sling.models.annotations.injectorspecific.ScriptVariable;
+import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 
 /**
  * Base class for common ACL/ACE functionality
@@ -36,11 +37,11 @@ import org.apache.sling.models.annotations.injectorspecific.ScriptVariable;
 public abstract class AccessFormPage {
     protected PrivilegesInfo privilegesInfo = null;
 
-    @ScriptVariable
-    protected SlingHttpServletRequest request;
+    @SlingObject
+    protected SlingJakartaHttpServletRequest request;
 
-    @ScriptVariable
-    protected SlingHttpServletResponse response;
+    @SlingObject
+    protected SlingJakartaHttpServletResponse response;
 
     @ScriptVariable
     protected Resource resource;
